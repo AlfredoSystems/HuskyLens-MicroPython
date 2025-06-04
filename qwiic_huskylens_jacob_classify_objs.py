@@ -105,7 +105,7 @@ def userButtonAwaitedForSeconds(seconds):
 def train_object(object_num):
 	print(f"Let's teach the HuskyLens object #{object_num}.")
 	print("Place the object in front of the camera.")
-	print("When the object is in view and in the square, enter anything to continue.")
+	print("When the object is in view and in the square, press the user button to continue.")
 	board.wait_for_button()
 
 	myHuskylens.learn_new()
