@@ -45,6 +45,7 @@ New to Qwiic? Take a look at the entire [SparkFun Qwiic ecosystem](https://www.s
 # The Qwiic_I2C_Py platform driver is designed to work on almost any Python
 # platform, check it out here: https://github.com/sparkfun/Qwiic_I2C_Py
 import qwiic_i2c
+import sys
 
 _DEFAULT_NAME = "Qwiic Huskylens"
 
@@ -136,7 +137,13 @@ class QwiicHuskylens(object):
 
         # Load the I2C driver if one isn't provided
         if i2c_driver is None:
-            self._i2c = qwiic_i2c.getI2CDriver()
+            #self._i2c = qwiic_i2c.getI2CDriver()
+            #self._i2c =  qwiic_i2c.get_i2c_driver(sda = 4, scl = 5)
+            if "RP2350" in sys.implementation._machine:
+                self._i2c = qwiic_i2c.get_i2c_driver(sda = 4, scl = 5)
+            else:
+                self._i2c = qwiic_i2c.get_i2c_driver(sda = 18, scl = 19)
+                
             if self._i2c is None:
                 print("Unable to load I2C driver for this platform.")
                 return
