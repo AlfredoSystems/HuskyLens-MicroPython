@@ -33,6 +33,7 @@
 # SOFTWARE.
 #===============================================================================
 
+from XRPLib.defaults import *
 import qwiic_huskylens 
 import sys
 import time
@@ -46,7 +47,6 @@ def millis():
 def runExample():
 	print("\nQwiic Huskylens Example 8 - Object Classification\n")
 
-
 	# Check if it's connected
 	if myHuskylens.is_connected() == False:
 		print("The device isn't connected to the system. Please check your connection",
@@ -58,15 +58,18 @@ def runExample():
 		print("Failed to initialize the device. Please check your connection", file=sys.stderr)
 		return
 
-	myHuskylens.forget() # Forget all the objects that the device has already learned
+	if not userButtonAwaitedForSeconds(5):
+		print("Button not pressed. Skipping training.")
+	else:
+		print("Button pressed. Starting training...")
+		myHuskylens.forget() # Forget all the objects that the device has already learned
+		for i in range(1, 5):
+			train_object(i)
+
+
 	if myHuskylens.set_algorithm(myHuskylens.kAlgorithmObjectClassification) == False: # The device has several algorithms, we want to use object classification
 		print("Failed to set algorithm. Please try running again.", file=sys.stderr)
-	
-	# Classification simply tries to fit objects into the categories we have taught it
-	print("training now")
-	for i in range(1,5):
-	    train_object(i)
-	    
+
 	# The block will not move with the object, but the ID will be the closest match the algorithm can make to an ID we have taught it
 	while True:
 		# This function will return a list of objects of interest that the device sees
@@ -80,23 +83,42 @@ def runExample():
 
 		time.sleep(0.1)
 
+def userButtonAwaitedForSeconds(seconds):
+	print("Press the button to begin training, skipping training in...")
+	pressed = False
+	for i in range(seconds, 0, -1):
+		board.led_on()
+		print(f"{i}...")
+		time.sleep(0.25)
+		if board.is_button_pressed() == 1:  # Button pressed (HIGH)
+			pressed = True
+			break
+		board.led_off()
+		time.sleep(0.75)
+		if board.is_button_pressed() == 1:
+			pressed = True
+			break
+
+	board.led_off()
+	return pressed
+
 def train_object(object_num):
-    print(f"Let's teach the HuskyLens object #{object_num}.")
-    print("Place the object in front of the camera.")
-    print("When the object is in view and in the square, enter anything to continue.")
-    input()
+	print(f"Let's teach the HuskyLens object #{object_num}.")
+	print("Place the object in front of the camera.")
+	print("When the object is in view and in the square, enter anything to continue.")
+	input()
 
-    myHuskylens.learn_new()
-    print("Object learned!")
+	myHuskylens.learn_new()
+	print("Object learned!")
 
-    print("Now move the object around so the HuskyLens can track it at different angles.")
-    print("Training for 15 seconds...")
+	print("Now move the object around so the HuskyLens can track it at different angles.")
+	print("Training for 15 seconds...")
 
-    startTime = millis()
-    while (millis() - startTime < 15000):
-        myHuskylens.wait_for_objects_of_interest()
-        myHuskylens.learn_same()
-        time.sleep(0.1)
+	startTime = millis()
+	while (millis() - startTime < 15000):
+		myHuskylens.wait_for_objects_of_interest()
+		myHuskylens.learn_same()
+		time.sleep(0.1)
 
 if __name__ == '__main__':
 	try:
