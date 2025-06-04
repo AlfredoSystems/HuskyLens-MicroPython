@@ -57,19 +57,19 @@ def runExample():
 	if myHuskylens.begin() == False:
 		print("Failed to initialize the device. Please check your connection", file=sys.stderr)
 		return
-
+		
 	if not userButtonAwaitedForSeconds(5):
 		print("Button not pressed. Skipping training.")
 	else:
 		print("Button pressed. Starting training...")
+		time.sleep(2)
 		myHuskylens.forget() # Forget all the objects that the device has already learned
 		for i in range(1, 5):
 			train_object(i)
 
-
 	if myHuskylens.set_algorithm(myHuskylens.kAlgorithmObjectClassification) == False: # The device has several algorithms, we want to use object classification
 		print("Failed to set algorithm. Please try running again.", file=sys.stderr)
-
+		
 	# The block will not move with the object, but the ID will be the closest match the algorithm can make to an ID we have taught it
 	while True:
 		# This function will return a list of objects of interest that the device sees
@@ -106,7 +106,7 @@ def train_object(object_num):
 	print(f"Let's teach the HuskyLens object #{object_num}.")
 	print("Place the object in front of the camera.")
 	print("When the object is in view and in the square, enter anything to continue.")
-	input()
+	board.wait_for_button()
 
 	myHuskylens.learn_new()
 	print("Object learned!")
