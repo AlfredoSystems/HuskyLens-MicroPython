@@ -64,7 +64,7 @@ def runExample():
 		print("Button pressed. Starting training...")
 		time.sleep(2)
 		myHuskylens.forget() # Forget all the objects that the device has already learned
-		for i in range(1, 5):
+		for i in range(1, 3):
 			train_object(i)
 
 	if myHuskylens.set_algorithm(myHuskylens.kAlgorithmObjectClassification) == False: # The device has several algorithms, we want to use object classification
@@ -77,11 +77,34 @@ def runExample():
 		myClassifications = myHuskylens.get_objects_of_interest()
 		if len(myClassifications) == 0:
 			print("No objects found")
+			drivetrain.arcade(0,0)
 		else:
 			for classification in myClassifications:
+
 				print ("object ID: " + str(classification.id))
 
+				if (classification.id == 4):
+					#drive straight
+					drivetrain.arcade(0.5,0)
+
+				elif (classification.id == 3):
+					#turn right
+					drivetrain.arcade(0,-0.5)
+					
+				elif (classification.id == 2):
+					#turn left
+					drivetrain.arcade(0,0.5)
+					
+				elif (classification.id == 1):
+					#stop
+					drivetrain.arcade(0,0)
+
+
 		time.sleep(0.1)
+
+
+
+# ---------------- helper functions ---------------- #
 
 def userButtonAwaitedForSeconds(seconds):
 	print("Press the button to begin training, skipping training in...")
