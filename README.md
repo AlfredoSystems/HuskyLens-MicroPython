@@ -2,7 +2,7 @@
 
 Designed for both XRP BETA and XRP V1. On the V1 Board use QWIIC port 0.
 
-Once your XRP has the files, run qwiic_huskylens_jacob_classify_objs.py
+Once your XRP has the files, run classify_objects.py
 
 Upload these files to your XRP robot with the following structure:
 ```
@@ -19,5 +19,9 @@ Upload these files to your XRP robot with the following structure:
 │       ├── i2c_driver.py
 │       └── micropython_i2c.py
 │
-└── qwiic_huskylens_jacob_classify_objs.py
+└── classify_objects.py
 ```
+
+based on code by SparkFun, check out more examples here:
+
+https://github.com/sparkfun/qwiic_huskylens_py
